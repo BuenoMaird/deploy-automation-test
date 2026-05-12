@@ -7,8 +7,7 @@ on:
 env:
   AWS_REGION: ap-southeast-2
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com
-  ECR_REPOSITORY: my-app
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  ECR_REPOSITORY: deploy-automation
 
 jobs:
   deploy:
@@ -46,13 +45,13 @@ jobs:
               docker login --username AWS --password-stdin \
               ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com
 
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/my-app:latest
+            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/deploy-automation:latest
 
-            docker stop my-app || true
-            docker rm my-app || true
+            docker stop deploy-automation || true
+            docker rm deploy-automation || true
 
             docker run -d \
-              --name my-app \
+              --name deploy-automation \
               --restart unless-stopped \
               -p 3000:3000 \
-              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/my-app:latest
+              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-2.amazonaws.com/deploy-automation:latest
